@@ -1,0 +1,666 @@
+/* GPA Calculator Floating Button */
+#gpa-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    padding: 12px 20px;
+    background-color: rgba(139, 0, 0, 0.9);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  #gpa-button:hover {
+    background-color: #8b0000;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  }
+  
+  /* GPA Modal */
+  #gpa-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.98);
+    padding: 30px;
+    z-index: 99999;
+    border-radius: 16px;
+    max-height: 85vh;
+    overflow: hidden;
+    width: 90%;
+    max-width: 700px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #gpa-modal h3 {
+    margin-top: 0;
+    font-size: 1.6rem;
+    color: #8b0000;
+    text-align: center;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  
+  #gpa-modal label {
+    font-size: 0.95rem;
+    display: inline-block;
+    margin-left: 8px;
+    max-width: 90%;
+  }
+  
+  /* Filter Container */
+  .filter-container {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f7;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .filter-container label {
+    margin-right: 10px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #333;
+    white-space: nowrap;
+  }
+  
+  .semester-dropdown {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: white;
+    font-size: 14px;
+    color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px top 50%;
+    background-size: 10px auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+  }
+  
+  .semester-dropdown:hover {
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+  
+  .semester-dropdown:focus {
+    outline: none;
+    border-color: #8b0000;
+    box-shadow: 0 0 0 2px rgba(139, 0, 0, 0.1);
+  }
+  
+  /* Dropdown option styling */
+  .semester-dropdown option {
+    padding: 8px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+  
+  /* Academic year options - bold and more distinct */
+  .semester-dropdown option:not([value^="School"]):not([value="all"]) {
+    font-weight: 600;
+    background-color: #f5f5f7;
+  }
+  
+  /* Semester Badge */
+  .semester-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    background-color: #f0f0f5;
+    color: #555;
+    white-space: nowrap;
+  }
+  
+  /* Custom badges for each semester type */
+  .semester-badge.first-sem {
+    background-color: #e3f2fd;
+    color: #0277bd;
+  }
+  
+  .semester-badge.second-sem {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  .semester-badge.summer {
+    background-color: #fff3e0;
+    color: #e65100;
+  }
+  
+  /* Subjects table */
+  .subjects-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .subjects-table thead {
+    background-color: #f5f5f7;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  .subjects-table th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .subjects-table td {
+    padding: 10px 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    font-size: 14px;
+  }
+  
+  .subjects-table tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+  
+  .subject-row {
+    transition: background-color 0.2s;
+  }
+  
+  /* Year group separator */
+  .year-separator {
+    background-color: #f8f8fa;
+    font-weight: 600;
+    color: #666;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Checkbox styling */
+  .custom-checkbox {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    accent-color: #8b0000;
+  }
+  
+  /* Button container */
+  .button-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  /* Buttons */
+  #gpa-modal button {
+    transition: all 0.2s ease;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  #gpa-modal button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  #select-all-btn, #unselect-all-btn {
+    background-color: #f5f5f7;
+    color: #333;
+    flex: 1;
+  }
+  
+  #latin-honors-selection-btn {
+    background-color: #8b0000;
+    color: white;
+    flex: 2;
+  }
+  
+  #calc-gpa-btn {
+    width: 100%;
+    background-color: #0071e3;
+    color: white;
+    padding: 12px;
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 5px;
+  }
+  
+  #close-modal-btn {
+    width: 100%;
+    background-color: #f5f5f7;
+    color: #333;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-top: 15px;
+  }
+  
+  /* Results area */
+  .results-container {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    background-color: #f5f5f7;
+    text-align: center;
+  }
+  
+  #gpa-result {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  #latin-honor-result {
+    margin: 10px 0 15px 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #8b0000;
+    padding: 15px;
+    background-color: #fff3cd;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    text-align: center;
+  }
+  
+  /* Latin Honors Criteria */
+  .honors-criteria {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    text-align: left;
+  }
+  
+  .criteria-note {
+    font-size: 13px;
+    color: #555;
+    font-style: italic;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .criteria-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+  }
+  
+  .criteria-range {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    padding: 4px 8px;
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .criteria-honor {
+    font-size: 15px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    color: white;
+  }
+  
+  .criteria-honor.summa {
+    background-color: #1a237e;
+  }
+  
+  .criteria-honor.magna {
+    background-color: #283593;
+  }
+  
+  .criteria-honor.cum {
+    background-color: #303f9f;
+  }
+  
+  /* Scrollable area */
+  .subjects-container {
+    max-height: 350px;
+    overflow-y: auto;
+    margin: 0 -15px;
+    padding: 0 15px;
+    margin-bottom: 15px;
+    scrollbar-width: thin;
+    scrollbar-color: #8b0000 #f5f5f7;
+  }
+  
+  .subjects-container::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .subjects-container::-webkit-scrollbar-track {
+    background: #f5f5f7;
+    border-radius: 10px;
+  }
+  
+  .subjects-container::-webkit-scrollbar-thumb {
+    background-color: #8b0000;
+    border-radius: 10px;
+    border: 2px solid #f5f5f7;
+  }
+  
+  /* Badge for grade display */
+  .grade-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    min-width: 40px;
+    text-align: center;
+  }
+  
+  .grade-1 {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  .grade-1-25 {
+    background-color: #e8f4f8;
+    color: #0277bd;
+  }
+  
+  .grade-1-5 {
+    background-color: #fff8e1;
+    color: #ff8f00;
+  }
+  
+  .grade-1-75 {
+    background-color: #fff5e6;
+    color: #e65100;
+  }
+  
+  .grade-2 {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+  
+  /* Animation for modal */
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -48%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+  
+  #gpa-modal {
+    animation: modalFadeIn 0.3s ease-out;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .filter-container {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .filter-container label {
+      margin-bottom: 8px;
+    }
+    
+    .semester-dropdown {
+      width: 100%;
+    }
+    
+    .button-group {
+      flex-direction: column;
+    }
+    
+    .subjects-table th, 
+    .subjects-table td {
+      padding: 8px 10px;
+    }
+    
+    #gpa-modal {
+      padding: 20px;
+      max-width: 95%;
+    }
+  }
+  
+  /* Honor result styling */
+  .honor-result {
+    display: inline-block;
+    font-size: 26px;
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: 30px;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    animation: honorPulse 2s infinite;
+  }
+  
+  .summa-honor {
+    background-color: #1a237e;
+    border: 2px solid gold;
+  }
+  
+  .magna-honor {
+    background-color: #283593;
+    border: 2px solid silver;
+  }
+  
+  .cum-honor {
+    background-color: #303f9f;
+    border: 2px solid #cd7f32; /* bronze color */
+  }
+  
+  @keyframes honorPulse {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    50% {
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  /* Highlight achieved criteria */
+  .criteria-item.achieved {
+    background-color: rgba(255, 215, 0, 0.15);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: scale(1.02);
+    transition: all 0.3s ease;
+  }
+  
+  .criteria-item.achieved .criteria-range {
+    font-weight: 700;
+    color: #000;
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+  
+  .criteria-item.achieved .criteria-honor {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Tabs Container */
+  .tabs-container {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin: 0 -10px;
+  }
+  
+  /* Tab Controls */
+  .tab-controls {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #f8f8f8;
+  }
+  
+  .tab-btn {
+    flex: 1;
+    padding: 12px 15px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: #555;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+  
+  .tab-btn:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+    color: #333;
+  }
+  
+  .tab-btn.active {
+    border-bottom-color: #8b0000;
+    color: #8b0000;
+    background-color: white;
+  }
+  
+  /* Tab Content */
+  .tab-content {
+    display: none;
+    padding: 15px;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .tab-content.active {
+    display: block;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* Breakdown Table */
+  .breakdown-info {
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .breakdown-table-container {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .breakdown-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  
+  .breakdown-table th,
+  .breakdown-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+  }
+  
+  .breakdown-table th {
+    background-color: #f5f5f7;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  
+  .breakdown-table .subject-desc {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .breakdown-table tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+  
+  .breakdown-table tfoot tr {
+    background-color: #f5f5f7;
+    font-weight: 600;
+  }
+  
+  .breakdown-total-label {
+    text-align: right;
+    padding-right: 15px;
+  }
+  
+  #final-gpa {
+    color: #8b0000;
+    font-weight: 700;
+  }
+  
+  .breakdown-formula {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f5f5f7;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    text-align: center;
+    font-style: italic;
+  }
+  
+  .no-subjects {
+    text-align: center;
+    padding: 30px 15px;
+    color: #666;
+    font-style: italic;
+  }
+  

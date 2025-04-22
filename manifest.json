@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "PUP Latin Honors Calculator",
+  "version": "1.2",
+  "description": "Calculate GPA and Latin Honor eligibility based on university grades.",
+  "permissions": ["activeTab", "scripting"],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://sis1.pup.edu.ph/student/grades*",
+        "https://sis2.pup.edu.ph/student/grades*",
+        "https://sis3.pup.edu.ph/student/grades*",
+        "https://sis4.pup.edu.ph/student/grades*",
+        "https://sis5.pup.edu.ph/student/grades*",
+        "https://sis6.pup.edu.ph/student/grades*",
+        "https://sis7.pup.edu.ph/student/grades*",
+        "https://sis8.pup.edu.ph/student/grades*"
+      ],
+      "js": ["jquery-3.7.1.min.js", "content.js"],
+      "css": ["style.css"]
+    }
+  ],
+  "author": "PUP Student",
+  "homepage_url": "https://www.pup.edu.ph"
+}
