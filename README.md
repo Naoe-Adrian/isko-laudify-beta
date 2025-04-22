@@ -20,6 +20,9 @@ A browser extension that allows PUP students to calculate their GPA and check La
 2. **Install in Microsoft Edge**
    - Open Edge browser
    - Navigate to `edge://extensions/` in your address bar
+  
+     ![image](https://github.com/user-attachments/assets/50a091b4-80a2-4ffc-bc1e-1ca5b8f7bf03)
+
    - Enable "Developer mode" using the toggle in the bottom-left corner
    - Click "Load unpacked"
   
