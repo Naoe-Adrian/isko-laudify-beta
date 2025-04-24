@@ -1,21 +1,16 @@
-# 🧮 PUP Latin Honors Calculator
+# Isko-Laudify
 
-A browser extension that allows PUP students to calculate their GPA and check Latin Honor eligibility directly from their Student Portal.
+A browser extension that allows university students to calculate their GPA and check Latin Honor eligibility directly from their Student Portal.
 
----
 
-## ✨ Features
+## Features
 
-- 🧮 Calculate your GPA based on the official PUP grading system  
-- 🎓 Check your Latin Honor eligibility (Summa, Magna, Cum Laude)  
-- 📊 View detailed computation breakdown of how your GPA is calculated  
-- 🗂️ Filter courses by academic year and semester  
-- 📝 Automatically excludes non-counted subjects (PE, NSTP, etc.)  
-- 🔄 Works across all PUP SIS servers (sis1–sis8)
-
----
-
-## 🖥️ Installation Instructions (Microsoft Edge)
+- 🧮 Calculate your GPA based on official university grading system
+- 🎓 Check your Latin Honor eligibility (Summa, Magna, Cum Laude)
+- 📊 View detailed computation breakdown of how your GPA is calculated
+- 🗂️ Filter courses by academic year and semester
+- 📝 Automatically excludes non-counted subjects (PE, NSTP, etc.)
+- 🔄 Works across all SIS servers
 
 ### 1. Download the Extension Files
 
@@ -99,21 +94,20 @@ A browser extension that allows PUP students to calculate their GPA and check La
 
 ---
 
-## 🛠 Troubleshooting
+## Troubleshooting
 
-- **Extension not appearing**: Make sure it's enabled in the Edge extensions page  
-- **Button not visible**: Refresh the Grades page and ensure you're on a valid SIS URL  
-- **Data not loading**: Confirm you're properly logged in to your SIS account
+- **Extension not appearing**: Make sure the extension is enabled in Edge
+- **Button not visible**: Refresh the grades page; make sure you're on a valid SIS grades URL
+- **Data not loading**: Check if you're properly logged in to the SIS portal
+
+## Privacy Notice
+
+This extension works entirely on your browser and does not collect or transmit any data. All calculations are performed locally.
+
+## Disclaimer
+
+This calculator is unofficial and provided for reference only. Always verify your actual GPA and Latin Honor eligibility with the university registrar.
 
 ---
 
-## 🔒 Privacy Notice
-
-This extension works **entirely in your browser** and does **not collect** or transmit any data. All calculations are performed **locally**.
-
----
-
-## ⚠️ Disclaimer
-
-This calculator is **unofficial** and provided for **reference only**. Always verify your GPA and Latin Honor eligibility with the **University Registrar**.
-
+Developed by Adrian Naoe 
