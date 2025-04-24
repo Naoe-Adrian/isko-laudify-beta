@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Isko-Laudify",
+  "version": "1.0",
+  "description": "Calculate GPA and Latin Honor eligibility based on university grades.",
+  "permissions": ["activeTab", "scripting"],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.edu.ph/student/grades*"
+      ],
+      "js": ["jquery-3.7.1.min.js", "content.js"],
+      "css": ["style.css"]
+    }
+  ],
+  "author": "Adrian Naoe",
+  "homepage_url": "https://github.com/adriannaoe/isko-laudify"
+}
