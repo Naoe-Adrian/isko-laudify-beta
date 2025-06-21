@@ -362,8 +362,7 @@
                 yPos += 8;
               });
               
-              const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '');
-              doc.save(`GPA_Report_Basic_${timestamp}.pdf`);
+              doc.save(`GPA_Report_Basic_.pdf`);
             }
             
             btn.textContent = '✅ PDF Generated!';
@@ -557,9 +556,8 @@
         
         generateDetailedBreakdownPages(doc, groupedData);
         
-        const now = new Date();
-        const timestamp = now.toISOString().slice(0, 19).replace(/[:-]/g, '');
-        const filename = `GPA_Report_${timestamp}.pdf`;
+
+        const filename = `GPA_Report_Iskolaufiy.pdf`;
         
         doc.save(filename);
       } catch (error) {
