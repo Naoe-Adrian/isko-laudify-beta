@@ -17,7 +17,7 @@
         
         $(this).find('tbody tr').each(function () {
           const cols = $(this).find('td');
-          if (cols.length < 8) return; // Make sure we have enough columns
+          if (cols.length < 8) return; 
   
           const rowIndex = $(cols[0]).text().trim();
           const subjectCode = $(cols[1]).text().trim();
@@ -41,18 +41,18 @@
         });
       });
   
-      // Sort subjects by semester to group them properly
+
       subjects.sort((a, b) => {
         return a.semester.localeCompare(b.semester);
       });
   
-      // Organize semesters into academic years
+
       const academicYears = organizeSemesters(semesterCategories);
   
       const modalDiv = document.createElement('div');
       modalDiv.id = 'gpa-modal';
       
-      // Create filter dropdown for semesters/years
+
       const semesterDropdown = `
         <div class="filter-container">
           <label for="semester-filter">Filter by Academic Year/Semester:</label>
@@ -86,7 +86,6 @@
             </thead>
             <tbody id="subjects-tbody">
               ${subjects.map((subj, i) => {
-                // Create grade badge class based on grade value
                 let gradeClass = '';
                 if (subj.grade === 1.0) gradeClass = 'grade-1';
                 else if (subj.grade === 1.25) gradeClass = 'grade-1-25';
@@ -94,10 +93,8 @@
                 else if (subj.grade === 1.75) gradeClass = 'grade-1-75';
                 else if (subj.grade >= 2.0) gradeClass = 'grade-2';
                 
-                // Extract academic year from semester string
                 const academicYear = extractAcademicYear(subj.semester);
                 
-                // Get semester type for badge styling
                 const semesterType = getSemesterType(subj.semester);
                 let semesterBadgeClass = '';
                 if (semesterType === 'first') semesterBadgeClass = 'first-sem';
@@ -122,14 +119,14 @@
         </div>
       `;
       
-      // Create results area with tabs
       const resultsArea = `
-        <button id="calc-gpa-btn">Calculate GPA</button>
-        <div class="results-container" style="display: none;">
+        <button id="calc-gpa-btn">Calculate GPA</button>        <div class="results-container" style="display: none;">
           <div class="tabs-container">
             <div class="tab-controls">
               <button class="tab-btn active" data-tab="results">Results</button>
               <button class="tab-btn" data-tab="breakdown">Computation Breakdown</button>
+            <button id="export-pdf-btn" style="display: none;">📄 Export to PDF</button>
+          </div>
             </div>
             
             <div class="tab-content active" id="results-tab">
@@ -175,15 +172,16 @@
               </div>
               <div class="breakdown-formula">
                 <p>Formula: GPA = Total Grade Points ÷ Total Units</p>
-              </div>
-            </div>
+              </div>            </div>
           </div>
         </div>
         <button id="close-modal-btn">Close</button>
       `;
-      
-      modalDiv.innerHTML = `
+        modalDiv.innerHTML = `
         <h3>🎓 Isko-Laudify Calculator</h3>
+        <div class="disclaimer-notice">
+          <p><strong>📋 Notice:</strong> This tool provides GPA estimations for personal academic reference only. Not affiliated with PUP. For official records, consult the university registrar.</p>
+        </div>
         ${semesterDropdown}
         ${buttonGroup}
         ${subjectsTable}
@@ -192,20 +190,16 @@
       
       document.body.appendChild(modalDiv);
   
-      // Add event listener for semester filter dropdown
       document.getElementById('semester-filter').addEventListener('change', function() {
         const selectedValue = this.value;
         
         if (selectedValue === 'all') {
-          // Show all subjects
           $('.subject-row').show();
         } else if (selectedValue.startsWith('year-')) {
-          // Show only subjects from the selected academic year
           const academicYear = selectedValue.replace('year-', '');
           $('.subject-row').hide();
           $(`.subject-row[data-academic-year="${academicYear}"]`).show();
         } else {
-          // Show only subjects from the selected semester
           $('.subject-row').hide();
           $(`.subject-row[data-semester="${selectedValue}"]`).show();
         }
@@ -216,7 +210,6 @@
       };
   
       document.getElementById('select-all-btn').onclick = () => {
-        // Only select visible subjects (respecting the filter)
         $('.subject-row:visible').each(function() {
           const id = $(this).find('input').attr('id');
           document.getElementById(id).checked = true;
@@ -224,7 +217,6 @@
       };
   
       document.getElementById('unselect-all-btn').onclick = () => {
-        // Only unselect visible subjects (respecting the filter)
         $('.subject-row:visible').each(function() {
           const id = $(this).find('input').attr('id');
           document.getElementById(id).checked = false;
@@ -232,7 +224,6 @@
       };
   
       document.getElementById('latin-honors-selection-btn').onclick = () => {
-        // Apply Latin honors selection only to visible subjects
         $('.subject-row:visible').each(function() {
           const checkboxId = $(this).find('input').attr('id');
           const subjectIndex = parseInt($(this).find('input').data('i'));
@@ -247,13 +238,11 @@
   
         subjects.forEach((s, i) => {
           const checkbox = document.getElementById(`subj-${i}`);
-          // Only calculate if the checkbox exists and is checked
           if (checkbox && checkbox.checked) {
             const gradePoints = s.grade * s.units;
             totalGradePoints += gradePoints;
             totalUnits += s.units;
-            
-            // Add to included subjects for breakdown
+
             includedSubjects.push({
               ...s,
               gradePoints: gradePoints,
@@ -264,7 +253,6 @@
   
         const gpa = totalUnits > 0 ? (totalGradePoints / totalUnits).toFixed(4) : 0;
         
-        // Display results with a smooth animation
         const resultsContainer = document.querySelector('.results-container');
         resultsContainer.style.display = 'block';
         
@@ -272,7 +260,6 @@
           <span style="font-size: 16px;">Your GPA:</span> ${gpa}
         `;
         
-        // Calculate Latin honor based on GPA
         const latinHonor = calculateLatinHonor(parseFloat(gpa));
         const honorClass = getHonorClass(latinHonor);
         
@@ -280,7 +267,6 @@
           <span class="honor-result ${honorClass}">${latinHonor}</span>
         `;
         
-        // Highlight the achieved honor in the criteria list
         setTimeout(() => {
           const criteriaItems = document.querySelectorAll('.criteria-item');
           criteriaItems.forEach(item => {
@@ -296,11 +282,9 @@
           });
         }, 100);
         
-        // Populate the breakdown table
         const breakdownTbody = document.getElementById('breakdown-tbody');
         let breakdownHtml = '';
         
-        // Sort subjects by semester for better organization
         includedSubjects.sort((a, b) => a.semester.localeCompare(b.semester));
         
         includedSubjects.forEach(subj => {
@@ -317,7 +301,6 @@
           `;
         });
         
-        // If no subjects are included, show a message
         if (includedSubjects.length === 0) {
           breakdownHtml = `
             <tr>
@@ -327,21 +310,81 @@
         }
         
         breakdownTbody.innerHTML = breakdownHtml;
-        
-        // Update totals in the breakdown table
+
         document.getElementById('total-units').textContent = totalUnits;
         document.getElementById('total-grade-points').textContent = totalGradePoints.toFixed(2);
         document.getElementById('final-gpa').textContent = gpa;
-        
-        // Setup tab switching
         setupTabSwitching();
         
-        // Scroll to see results if needed
-        resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        document.getElementById('export-pdf-btn').style.display = 'inline-block';
+        
+        resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });   
+        document.getElementById('export-pdf-btn').onclick = () => {
+          const btn = document.getElementById('export-pdf-btn');
+          const originalText = btn.textContent;
+          
+          btn.textContent = '📄 Generating PDF...';
+          btn.disabled = true;
+          
+          try {
+            if (typeof window.jspdf === 'undefined') {
+              throw new Error('jsPDF library not found. Please refresh the page.');
+            }
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.text('GPA Computation Report', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(14);
+            doc.text(`Final GPA: ${gpa}`, 20, 40);
+            doc.text(`Latin Honor: ${latinHonor.replace(/[🏆🥇🥈]/g, '').trim()}`, 20, 55);
+            
+            if (typeof doc.autoTable === 'function') {
+              console.log('AutoTable is available, generating enhanced PDF');
+              generatePDFReport(includedSubjects, parseFloat(gpa), latinHonor);
+            } else {
+              console.log('AutoTable not available, generating basic PDF');
+              
+              let yPos = 80;
+              doc.setFontSize(12);
+              doc.text('Included Subjects:', 20, yPos);
+              yPos += 10;
+              
+              doc.setFontSize(10);
+              includedSubjects.forEach(subject => {
+                if (yPos > 270) {
+                  doc.addPage();
+                  yPos = 20;
+                }
+                doc.text(`${subject.code} - ${subject.desc} (${subject.units} units, Grade: ${subject.grade})`, 20, yPos);
+                yPos += 8;
+              });
+              
+              const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '');
+              doc.save(`GPA_Report_Basic_${timestamp}.pdf`);
+            }
+            
+            btn.textContent = '✅ PDF Generated!';
+            setTimeout(() => {
+              btn.textContent = originalText;
+              btn.disabled = false;
+            }, 2000);
+            
+          } catch (error) {
+            console.error('PDF generation error:', error);
+            alert(`PDF Error: ${error.message}`);
+            btn.textContent = '❌ Error - Try Again';
+            setTimeout(() => {
+              btn.textContent = originalText;
+              btn.disabled = false;
+            }, 3000);
+          }
+        };
       };
     };
   
-    // Helper function to organize semesters into academic years
     function organizeSemesters(semesterSet) {
       const academicYears = {};
       
@@ -353,17 +396,14 @@
         academicYears[academicYear].push(semester);
       });
       
-      // Sort the semesters within each academic year in the correct order (1st Sem, 2nd Sem, Summer)
       for (const year in academicYears) {
         academicYears[year].sort((a, b) => {
-          // Get the semester type (First, Second, Summer)
+
           const typeA = getSemesterType(a);
           const typeB = getSemesterType(b);
           
-          // Define the order: 1st Sem (1), 2nd Sem (2), Summer (3)
           const orderMap = { 'first': 1, 'second': 2, 'summer': 3 };
           
-          // Compare based on the predefined order
           return orderMap[typeA] - orderMap[typeB];
         });
       }
@@ -371,7 +411,6 @@
       return academicYears;
     }
   
-    // Helper function to determine semester type (first, second, summer)
     function getSemesterType(semesterString) {
       semesterString = semesterString.toLowerCase();
       
@@ -383,13 +422,11 @@
         return 'summer';
       }
       
-      // Default to 'first' if we can't determine
+
       return 'first';
     }
-  
-    // Helper function to extract academic year from semester string
+
     function extractAcademicYear(semesterString) {
-      // Extract the first digits (e.g., "School Year 2122" -> "2122")
       const matches = semesterString.match(/\d{4}/);
       if (matches && matches.length > 0) {
         return matches[0];
@@ -397,22 +434,18 @@
       return "Unknown";
     }
   
-    // Helper function to generate dropdown options for academic years and semesters
     function generateAcademicYearOptions(academicYears) {
       let options = '';
       
-      // Sort academic years in descending order (newest first)
+
       const sortedYears = Object.keys(academicYears).sort().reverse();
       
       sortedYears.forEach(year => {
         if (year !== "Unknown") {
-          // Add option for the entire academic year
+
           options += `<option value="year-${year}">Year ${year.substring(0, 2)}-${year.substring(2)}</option>`;
           
-          // Add options for individual semesters within this year
-          // They are already sorted in correct order (1st, 2nd, Summer) by organizeSemesters
           academicYears[year].forEach(semester => {
-            // Use non-breaking spaces for indentation (more reliable than regular spaces)
             options += `<option value="${semester}">&nbsp;&nbsp;&nbsp;${formatSemester(semester)}</option>`;
           });
         }
@@ -421,9 +454,7 @@
       return options;
     }
   
-    // Helper function to format semester string for display
     function formatSemester(semesterString) {
-      // Extract the year part (e.g., "2122" from "School Year 2122 First Semester")
       const yearMatch = semesterString.match(/\d{4}/);
       let formattedSemester = semesterString;
       
@@ -431,10 +462,8 @@
         const year = yearMatch[0];
         const shortYear = `${year.substring(0, 2)}-${year.substring(2)}`;
         
-        // Determine the semester type
         const semesterType = getSemesterType(semesterString);
         
-        // Format based on semester type
         switch(semesterType) {
           case 'first':
             formattedSemester = `${shortYear} 1st Sem`;
@@ -446,7 +475,6 @@
             formattedSemester = `${shortYear} Summer`;
             break;
           default:
-            // Keep the original format if we can't determine
             formattedSemester = `${shortYear} ${semesterString.split(" ").slice(-2).join(" ")}`;
         }
       }
@@ -454,31 +482,23 @@
       return formattedSemester;
     }
   
-    // Function to determine if subject should be excluded from Latin honors calculation
-    function isExcludedFromLatinHonors(code, desc) {
-      // Based on University rules for Latin Honors calculation
-      
-      // 1. NSTP subjects (CWTS)
+    function isExcludedFromLatinHonors(code) {
+
       if (code.startsWith('NSTP') || code.startsWith('CWTS')) {
         return true;
       }
       
-      // 2. Physical Education subjects
       if (code.startsWith('PHED')) {
         return true;
       }
-      
-      // 3. Non-numeric grades (like "P" without numeric equivalent)
-      if (code === 'INTE 40173') { // Capstone Project 2 - has P grade
+      if (code.startsWith('PATHFit ') || code.startsWith('PATH')) {
         return true;
       }
-            
+
       return false;
     }
-  
-    // Function to determine Latin honor based on GPA
+
     function calculateLatinHonor(gpa) {
-      // Based on University Student Handbook Latin Honors Criteria
       if (gpa >= 1.0 && gpa <= 1.15) {
         return "Summa Cum Laude 🏆";
       } else if (gpa >= 1.1501 && gpa <= 1.35) {
@@ -490,7 +510,7 @@
       }
     }
   
-    // Helper function to determine honor CSS class
+
     function getHonorClass(honor) {
       if (honor.includes('Summa')) {
         return 'summa-honor';
@@ -501,26 +521,381 @@
       }
       return '';
     }
-  
-    // Setup tab switching functionality
+
     function setupTabSwitching() {
       const tabButtons = document.querySelectorAll('.tab-btn');
       const tabContents = document.querySelectorAll('.tab-content');
       
       tabButtons.forEach(button => {
         button.addEventListener('click', () => {
-          // Remove active class from all buttons and contents
           tabButtons.forEach(btn => btn.classList.remove('active'));
           tabContents.forEach(content => content.classList.remove('active'));
           
-          // Add active class to clicked button
           button.classList.add('active');
           
-          // Show corresponding content
           const tabId = button.getAttribute('data-tab');
           document.getElementById(`${tabId}-tab`).classList.add('active');
         });
       });
+    }    
+    function generatePDFReport(includedSubjects, finalGPA, latinHonor) {
+      try {
+        if (typeof window.jspdf === 'undefined') {
+          throw new Error('jsPDF library not loaded');
+        }
+        
+        const { jsPDF } = window.jspdf;
+        if (typeof jsPDF.API.autoTable !== 'function') {
+          throw new Error('jsPDF autoTable plugin not loaded');
+        }
+        
+        const doc = new jsPDF();
+        
+        const groupedData = groupSubjectsByYearSemester(includedSubjects);
+        
+        generateOverallSummaryPage(doc, groupedData, finalGPA, latinHonor);
+        
+        generateDetailedBreakdownPages(doc, groupedData);
+        
+        const now = new Date();
+        const timestamp = now.toISOString().slice(0, 19).replace(/[:-]/g, '');
+        const filename = `GPA_Report_${timestamp}.pdf`;
+        
+        doc.save(filename);
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        alert(`Error generating PDF report: ${error.message}. Please ensure all required libraries are loaded.`);
+        throw error;
+      }
+    }    function groupSubjectsByYearSemester(subjects) {
+      const grouped = {};
+      
+      subjects.forEach(subject => {
+        const academicYear = extractAcademicYear(subject.semester);
+        const semesterType = getSemesterType(subject.semester);
+        
+        const yearLevel = getYearLevelFromAcademicYear(academicYear, subjects);
+        const key = `${yearLevel}-${academicYear}-${semesterType}`;
+        
+        if (!grouped[key]) {
+          grouped[key] = {
+            academicYear: academicYear,
+            semesterType: semesterType,
+            yearLevel: yearLevel,
+            semester: subject.semester,
+            subjects: [],
+            totalUnits: 0,
+            totalGradePoints: 0
+          };
+        }
+        
+        grouped[key].subjects.push(subject);
+        grouped[key].totalUnits += subject.units;
+        grouped[key].totalGradePoints += (subject.grade * subject.units);
+      });
+      
+      Object.keys(grouped).forEach(key => {
+        const group = grouped[key];
+        group.gwa = group.totalUnits > 0 ? (group.totalGradePoints / group.totalUnits) : 0;
+      });
+      
+      return grouped;
+    }  
+    function getYearLevelFromAcademicYear(academicYear, allSubjects = []) {
+      const academicYearInt = parseInt(academicYear);
+      
+      const allAcademicYears = allSubjects
+        .map(subject => parseInt(extractAcademicYear(subject.semester)))
+        .filter(year => !isNaN(year))
+        .sort((a, b) => a - b);
+      
+      const uniqueYears = [...new Set(allAcademicYears)];
+    
+      let baseYear = uniqueYears.length > 0 ? uniqueYears[0] : 2122;
+      
+      const yearDifference = academicYearInt - baseYear;
+      const yearLevel = Math.floor(yearDifference / 101) + 1;
+      
+      const clampedYearLevel = Math.max(1, Math.min(6, yearLevel));
+      
+      return clampedYearLevel.toString();
+    }function generateOverallSummaryPage(doc, groupedData, finalGPA, latinHonor) {
+
+      doc.setFillColor(139, 0, 0); 
+      doc.rect(0, 0, 210, 30, 'F');
+      
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(16);
+      doc.setFont(undefined, 'bold');
+      doc.text('ISKO-LAUDIFY PDF REPORT', 105, 12, { align: 'center' });
+      
+      doc.setFontSize(14);
+      doc.text('GPA COMPUTATION SUMMARY', 105, 22, { align: 'center' });
+      
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'normal');
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      doc.text(`Generated on: ${dateStr}`, 105, 40, { align: 'center' });
+      const tableData = [];
+      const yearColors = {
+        '1': [255, 230, 230], 
+        '2': [255, 240, 240], 
+        '3': [250, 220, 220], 
+        '4': [245, 210, 210], 
+        '5': [240, 200, 200], 
+        '6': [235, 190, 190]  
+      };
+        let totalUnits = 0;
+      let totalGradePoints = 0;
+      const sortedKeys = Object.keys(groupedData).sort((a, b) => {
+        const [yearLevelA, academicYearA, semA] = a.split('-');
+        const [yearLevelB, academicYearB, semB] = b.split('-');
+        const yearNumA = parseInt(yearLevelA);
+        const yearNumB = parseInt(yearLevelB);
+        
+        if (yearNumA !== yearNumB) {
+          return yearNumA - yearNumB;
+        }
+        
+        if (academicYearA !== academicYearB) {
+          return academicYearA.localeCompare(academicYearB);
+        }
+        
+        const semesterOrder = { 'first': 1, 'second': 2, 'summer': 3 };
+        return semesterOrder[semA] - semesterOrder[semB];
+      });
+      
+      sortedKeys.forEach(key => {
+        const group = groupedData[key];
+        const yearLevel = getYearLevelDisplay(group.yearLevel);
+        const semesterDisplay = getSemesterDisplay(group.semesterType);
+        const weightedScore = group.totalGradePoints;
+          tableData.push([
+          yearLevel,
+          semesterDisplay,
+          group.totalUnits.toString(),
+          group.gwa.toFixed(2), 
+          weightedScore.toFixed(2)
+        ]);
+        
+        totalUnits += group.totalUnits;
+        totalGradePoints += group.totalGradePoints;
+      });
+      
+      tableData.push([
+        'TOTAL',
+        '',
+        totalUnits.toString(),
+        '',
+        totalGradePoints.toFixed(2)
+      ]);
+      doc.autoTable({
+        head: [['YEAR LEVEL', 'SEMESTER', 'UNITS', 'GWA', 'GRADE POINTS']],
+        body: tableData,
+        startY: 50,
+        styles: {
+          fontSize: 10,
+          halign: 'center',
+          valign: 'middle',
+          cellPadding: 6
+        },
+        headStyles: {
+          fillColor: [139, 0, 0], 
+          textColor: [255, 255, 255],
+          fontStyle: 'bold',
+          fontSize: 11
+        },
+        didDrawCell: function(data) {
+          if (data.section === 'body' && data.row.index < tableData.length - 1) {
+            const yearLevel = tableData[data.row.index][0];
+            const yearNumber = yearLevel.match(/(\d+)/)?.[1];
+            
+            if (yearNumber && yearColors[yearNumber]) {
+              data.cell.styles.fillColor = yearColors[yearNumber];
+            }
+          }
+          if (data.section === 'body' && data.row.index === tableData.length - 1) {
+            data.cell.styles.fillColor = [220, 220, 220];
+            data.cell.styles.fontStyle = 'bold';
+            data.cell.styles.textColor = [139, 0, 0]; 
+          }
+        }
+      });     
+      const finalY = doc.lastAutoTable.finalY + 20;
+      
+      if (finalY > 240) {
+        doc.addPage();
+        const newFinalY = 30;
+
+        doc.setTextColor(0, 0, 0)
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'bold');
+        
+        const cleanLatinHonor = latinHonor.replace(/[🏆🥇🥈]/g, '').trim();
+        doc.text(`Final GWA: ${finalGPA.toFixed(2)} | Latin Honor: ${cleanLatinHonor}`, 105, newFinalY, { align: 'center' });
+        
+        const disclaimerY = newFinalY + 25;
+        addDisclaimerFooter(doc, disclaimerY);
+      } else {
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'bold');
+        
+        const cleanLatinHonor = latinHonor.replace(/[🏆🥇🥈]/g, '').trim();
+        doc.text(`Final GWA: ${finalGPA.toFixed(2)} | Latin Honor: ${cleanLatinHonor}`, 105, finalY, { align: 'center' });
+        
+        const disclaimerY = finalY + 25;
+        addDisclaimerFooter(doc, disclaimerY);
+      }
+    }    function generateDetailedBreakdownPages(doc, groupedData) {
+      const sortedKeys = Object.keys(groupedData).sort((a, b) => {
+        const [yearLevelA, academicYearA, semA] = a.split('-');
+        const [yearLevelB, academicYearB, semB] = b.split('-');
+        
+        const yearNumA = parseInt(yearLevelA);
+        const yearNumB = parseInt(yearLevelB);
+        
+        if (yearNumA !== yearNumB) {
+          return yearNumA - yearNumB;
+        }
+        
+        if (academicYearA !== academicYearB) {
+          return academicYearA.localeCompare(academicYearB);
+        }
+        
+        const semesterOrder = { 'first': 1, 'second': 2, 'summer': 3 };
+        return semesterOrder[semA] - semesterOrder[semB];
+      });
+      
+      sortedKeys.forEach((key, index) => {
+        const group = groupedData[key];
+
+        doc.addPage();
+        
+        const yearLevel = getYearLevelDisplay(group.yearLevel);
+        const semesterDisplay = getSemesterDisplay(group.semesterType);
+        
+        doc.setFillColor(139, 0, 0);
+        doc.rect(0, 0, 210, 25, 'F');
+        
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text('DETAILED BREAKDOWN', 105, 15, { align: 'center' });
+        
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(16);
+        doc.setFont(undefined, 'bold');
+        doc.text(`${yearLevel} - ${semesterDisplay}`, 20, 40);
+        
+        doc.setFontSize(10);
+        doc.setFont(undefined, 'italic');
+        doc.text(`Academic Year: ${group.academicYear.substring(0, 2)}-${group.academicYear.substring(2)}`, 20, 48);
+        
+
+        const subjectData = group.subjects.map(subject => [
+          subject.code,
+          subject.desc,
+          subject.units.toString(),
+          subject.grade.toString()
+        ]);
+
+        subjectData.push([
+          'SEMESTER TOTAL',
+          '',
+          group.totalUnits.toString(),
+          `GWA: ${group.gwa.toFixed(2)}`
+        ]);
+
+        doc.autoTable({
+          head: [['Subject Code', 'Description', 'Units', 'Grade']],
+          body: subjectData,
+          startY: 55,
+          styles: {
+            fontSize: 9,
+            halign: 'center',
+            valign: 'middle',
+            cellPadding: 5
+          },
+          headStyles: {
+            fillColor: [139, 0, 0], 
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+            fontSize: 10
+          },
+          columnStyles: {
+            0: { halign: 'center', cellWidth: 35 },
+            1: { halign: 'left', cellWidth: 'auto' },
+            2: { halign: 'center', cellWidth: 25 },
+            3: { halign: 'center', cellWidth: 25 }
+          },
+          didDrawCell: function(data) {
+
+            if (data.section === 'body' && data.row.index === subjectData.length - 1) {
+              data.cell.styles.fillColor = [220, 220, 220];
+              data.cell.styles.fontStyle = 'bold';
+              data.cell.styles.fontSize = 10;
+              data.cell.styles.textColor = [139, 0, 0];
+            }
+          }        });
+          const tableEndY = doc.lastAutoTable.finalY;
+        const disclaimerY = Math.max(tableEndY + 20, 230); 
+        addDisclaimerFooter(doc, disclaimerY);
+      });
+    }
+
+    function getSemesterDisplay(semesterType) {
+      switch(semesterType) {
+        case 'first': return '1st Semester';
+        case 'second': return '2nd Semester';
+        case 'summer': return 'Summer';
+        default: return semesterType;
+      }
+    }
+
+    function getYearLevelDisplay(yearLevel) {
+      switch(yearLevel) {
+        case '1': return '1st Year';
+        case '2': return '2nd Year';
+        case '3': return '3rd Year';
+        case '4': return '4th Year';
+        case '5': return '5th Year';
+        case '6': return '6th Year';
+        default: return yearLevel + ' Year';
+      }
+    }   
+    function addDisclaimerFooter(doc, startY) {
+      if (startY > 260) {
+        doc.addPage();
+        startY = 30;
+      }
+
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(7);
+      doc.setFont(undefined, 'normal');
+      doc.text('Generated by Isko-Laudify Extension', 105, startY, { align: 'center' });
+      
+      doc.setFont(undefined, 'bold');
+      doc.setFontSize(8);
+      doc.text('DISCLAIMER', 105, startY + 8, { align: 'center' });
+      
+      doc.setFont(undefined, 'normal');
+      doc.setFontSize(6);
+      
+      const disclaimerLines = [
+        'This report is for personal academic reference and grade estimation only. Not affiliated with PUP.',
+        'For official records and verification, consult the university registrar.',
+        'Developer assumes no responsibility for academic decisions based on this tool.'
+      ];
+      
+      disclaimerLines.forEach((line, index) => {
+        doc.text(line, 105, startY + 16 + (index * 4), { align: 'center' });
+      });
     }
   })();
-  
