@@ -229,158 +229,196 @@
           const subjectIndex = parseInt($(this).find('input').data('i'));
           document.getElementById(checkboxId).checked = subjects[subjectIndex].included;
         });
-      };
-  
-      document.getElementById('calc-gpa-btn').onclick = () => {
-        let totalGradePoints = 0;
-        let totalUnits = 0;
-        let includedSubjects = [];
-  
-        subjects.forEach((s, i) => {
-          const checkbox = document.getElementById(`subj-${i}`);
-          if (checkbox && checkbox.checked) {
-            const gradePoints = s.grade * s.units;
-            totalGradePoints += gradePoints;
-            totalUnits += s.units;
-
-            includedSubjects.push({
-              ...s,
-              gradePoints: gradePoints,
-              index: i
-            });
-          }
-        });
-  
-        const gpa = totalUnits > 0 ? (totalGradePoints / totalUnits).toFixed(4) : 0;
+      };      document.getElementById('calc-gpa-btn').onclick = () => {
+        const btn = document.getElementById('calc-gpa-btn');
+        const originalText = btn.textContent;
         
-        const resultsContainer = document.querySelector('.results-container');
-        resultsContainer.style.display = 'block';
+        // Show loading state
+        btn.textContent = 'Calculating...';
+        btn.disabled = true;
         
-        document.getElementById('gpa-result').innerHTML = `
-          <span style="font-size: 16px;">Your GPA:</span> ${gpa}
-        `;
-        
-        const latinHonor = calculateLatinHonor(parseFloat(gpa));
-        const honorClass = getHonorClass(latinHonor);
-        
-        document.getElementById('latin-honor-result').innerHTML = `
-          <span class="honor-result ${honorClass}">${latinHonor}</span>
-        `;
-        
+        // Add a small delay to show the loading state
         setTimeout(() => {
-          const criteriaItems = document.querySelectorAll('.criteria-item');
-          criteriaItems.forEach(item => {
-            item.classList.remove('achieved');
-            
-            if (latinHonor.includes('Summa') && item.querySelector('.summa')) {
-              item.classList.add('achieved');
-            } else if (latinHonor.includes('Magna') && item.querySelector('.magna')) {
-              item.classList.add('achieved');
-            } else if (latinHonor.includes('Cum Laude') && !latinHonor.includes('Magna') && !latinHonor.includes('Summa') && item.querySelector('.cum')) {
-              item.classList.add('achieved');
+          let totalGradePoints = 0;
+          let totalUnits = 0;
+          let includedSubjects = [];
+          let excludedCount = 0;
+
+          subjects.forEach((s, i) => {
+            const checkbox = document.getElementById(`subj-${i}`);
+            if (checkbox && checkbox.checked) {
+              const gradePoints = s.grade * s.units;
+              totalGradePoints += gradePoints;
+              totalUnits += s.units;
+
+              includedSubjects.push({
+                ...s,
+                gradePoints: gradePoints,
+                index: i
+              });
+            } else {
+              excludedCount++;
             }
           });
-        }, 100);
-        
-        const breakdownTbody = document.getElementById('breakdown-tbody');
-        let breakdownHtml = '';
-        
-        includedSubjects.sort((a, b) => a.semester.localeCompare(b.semester));
-        
-        includedSubjects.forEach(subj => {
-          const percentContribution = ((subj.gradePoints / totalGradePoints) * 100).toFixed(1);
-          breakdownHtml += `
-            <tr>
-              <td>${subj.code}</td>
-              <td class="subject-desc">${subj.desc}</td>
-              <td class="text-center">${subj.units}</td>
-              <td class="text-center">${subj.grade}</td>
-              <td class="text-center">${subj.gradePoints.toFixed(2)}</td>
-              <td class="text-center">${percentContribution}%</td>
-            </tr>
-          `;
-        });
-        
-        if (includedSubjects.length === 0) {
-          breakdownHtml = `
-            <tr>
-              <td colspan="6" class="no-subjects">No subjects selected. Please select subjects to include in the calculation.</td>
-            </tr>
-          `;
-        }
-        
-        breakdownTbody.innerHTML = breakdownHtml;
 
-        document.getElementById('total-units').textContent = totalUnits;
-        document.getElementById('total-grade-points').textContent = totalGradePoints.toFixed(2);
-        document.getElementById('final-gpa').textContent = gpa;
-        setupTabSwitching();
-        
-        document.getElementById('export-pdf-btn').style.display = 'inline-block';
-        
-        resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });   
-        document.getElementById('export-pdf-btn').onclick = () => {
-          const btn = document.getElementById('export-pdf-btn');
-          const originalText = btn.textContent;
-          
-          btn.textContent = '📄 Generating PDF...';
-          btn.disabled = true;
-          
-          try {
-            if (typeof window.jspdf === 'undefined') {
-              throw new Error('jsPDF library not found. Please refresh the page.');
-            }
-            
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            doc.setFontSize(20);
-            doc.text('GPA Computation Report', 105, 20, { align: 'center' });
-            
-            doc.setFontSize(14);
-            doc.text(`Final GPA: ${gpa}`, 20, 40);
-            doc.text(`Latin Honor: ${latinHonor.replace(/[🏆🥇🥈]/g, '').trim()}`, 20, 55);
-            
-            if (typeof doc.autoTable === 'function') {
-              console.log('AutoTable is available, generating enhanced PDF');
-              generatePDFReport(includedSubjects, parseFloat(gpa), latinHonor);
-            } else {
-              console.log('AutoTable not available, generating basic PDF');
-              
-              let yPos = 80;
-              doc.setFontSize(12);
-              doc.text('Included Subjects:', 20, yPos);
-              yPos += 10;
-              
-              doc.setFontSize(10);
-              includedSubjects.forEach(subject => {
-                if (yPos > 270) {
-                  doc.addPage();
-                  yPos = 20;
-                }
-                doc.text(`${subject.code} - ${subject.desc} (${subject.units} units, Grade: ${subject.grade})`, 20, yPos);
-                yPos += 8;
-              });
-              
-              doc.save(`GPA_Report_Basic_.pdf`);
-            }
-            
-            btn.textContent = '✅ PDF Generated!';
-            setTimeout(() => {
-              btn.textContent = originalText;
-              btn.disabled = false;
-            }, 2000);
-            
-          } catch (error) {
-            console.error('PDF generation error:', error);
-            alert(`PDF Error: ${error.message}`);
-            btn.textContent = '❌ Error - Try Again';
-            setTimeout(() => {
-              btn.textContent = originalText;
-              btn.disabled = false;
-            }, 3000);
+          // Restore button state
+          btn.textContent = originalText;
+          btn.disabled = false;
+
+          // Validation
+          if (includedSubjects.length === 0) {
+            alert('Please select at least one subject to calculate GPA.');
+            return;
           }
-        };
+
+          const rawGPA = totalUnits > 0 ? (totalGradePoints / totalUnits) : 0;
+          const gpa = roundGPA(rawGPA);
+          
+          const resultsContainer = document.querySelector('.results-container');
+          resultsContainer.style.display = 'block';
+          
+          document.getElementById('gpa-result').innerHTML = `
+            <div class="gpa-display">
+              <span style="font-size: 16px;">Your GPA:</span> 
+              <span class="gpa-main">${formatGPA(gpa, 4)}</span>
+              <span class="gpa-rounded">(Rounded: ${formatGPA(gpa, 2)})</span>
+              <div class="gpa-stats">
+                <small>📊 ${includedSubjects.length} subjects included, ${excludedCount} excluded • Total ${totalUnits} units</small>
+              </div>
+            </div>
+          `;
+          
+          const latinHonor = calculateLatinHonor(gpa);
+          const honorClass = getHonorClass(latinHonor);
+          
+          document.getElementById('latin-honor-result').innerHTML = `
+            <span class="honor-result ${honorClass}">${latinHonor}</span>
+          `;
+          
+          setTimeout(() => {
+            const criteriaItems = document.querySelectorAll('.criteria-item');
+            criteriaItems.forEach(item => {
+              item.classList.remove('achieved');
+              
+              if (latinHonor.includes('Summa') && item.querySelector('.summa')) {
+                item.classList.add('achieved');
+              } else if (latinHonor.includes('Magna') && item.querySelector('.magna')) {
+                item.classList.add('achieved');
+              } else if (latinHonor.includes('Cum Laude') && !latinHonor.includes('Magna') && !latinHonor.includes('Summa') && item.querySelector('.cum')) {
+                item.classList.add('achieved');
+              }
+            });
+          }, 100);
+          
+          const breakdownTbody = document.getElementById('breakdown-tbody');
+          let breakdownHtml = '';
+          
+          includedSubjects.sort((a, b) => a.semester.localeCompare(b.semester));
+          
+          includedSubjects.forEach(subj => {
+            const percentContribution = ((subj.gradePoints / totalGradePoints) * 100).toFixed(1);
+            breakdownHtml += `
+              <tr>
+                <td>${subj.code}</td>
+                <td class="subject-desc">${subj.desc}</td>
+                <td class="text-center">${subj.units}</td>
+                <td class="text-center">${subj.grade}</td>
+                <td class="text-center">${subj.gradePoints.toFixed(2)}</td>
+                <td class="text-center">${percentContribution}%</td>
+              </tr>
+            `;
+          });
+          
+          if (includedSubjects.length === 0) {
+            breakdownHtml = `
+              <tr>
+                <td colspan="6" class="no-subjects">No subjects selected. Please select subjects to include in the calculation.</td>
+              </tr>
+            `;
+          }
+          
+          breakdownTbody.innerHTML = breakdownHtml;
+
+          document.getElementById('total-units').textContent = totalUnits;
+          document.getElementById('total-grade-points').textContent = totalGradePoints.toFixed(2);
+          document.getElementById('final-gpa').textContent = formatGPA(gpa, 2);
+          setupTabSwitching();
+          
+          document.getElementById('export-pdf-btn').style.display = 'inline-block';
+          
+          resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          
+          document.getElementById('export-pdf-btn').onclick = () => {
+            const pdfBtn = document.getElementById('export-pdf-btn');
+            const originalPdfText = pdfBtn.textContent;
+            
+            // Show progress
+            pdfBtn.textContent = '📄 Preparing PDF...';
+            pdfBtn.disabled = true;
+            
+            // Add a small delay to show the UI update
+            setTimeout(() => {
+              try {
+                if (typeof window.jspdf === 'undefined') {
+                  throw new Error('jsPDF library not found. Please refresh the page.');
+                }
+                
+                pdfBtn.textContent = '📄 Generating PDF...';
+                
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                doc.setFontSize(20);
+                doc.text('GPA Computation Report', 105, 20, { align: 'center' });
+                
+                doc.setFontSize(14);
+                doc.text(`Final GPA: ${formatGPA(gpa, 2)}`, 20, 40);
+                doc.text(`Latin Honor: ${latinHonor.replace(/[🏆🥇🥈]/g, '').trim()}`, 20, 55);
+                
+                if (typeof doc.autoTable === 'function') {
+                  console.log('AutoTable is available, generating enhanced PDF');
+                  generatePDFReport(includedSubjects, gpa, latinHonor);
+                } else {
+                  console.log('AutoTable not available, generating basic PDF');
+                  
+                  let yPos = 80;
+                  doc.setFontSize(12);
+                  doc.text('Included Subjects:', 20, yPos);
+                  yPos += 10;
+                  
+                  doc.setFontSize(10);
+                  includedSubjects.forEach(subject => {
+                    if (yPos > 270) {
+                      doc.addPage();
+                      yPos = 20;
+                    }
+                    doc.text(`${subject.code} - ${subject.desc} (${subject.units} units, Grade: ${subject.grade})`, 20, yPos);
+                    yPos += 8;
+                  });
+                  
+                  const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+                  const gpaForFilename = formatGPA(gpa, 2).replace('.', '_');
+                  doc.save(`GPA_Report_Basic_${gpaForFilename}_${timestamp}.pdf`);
+                }
+                
+                pdfBtn.textContent = '✅ PDF Generated!';
+                setTimeout(() => {
+                  pdfBtn.textContent = originalPdfText;
+                  pdfBtn.disabled = false;
+                }, 2000);
+                
+              } catch (error) {
+                console.error('PDF generation error:', error);
+                alert(`PDF Error: ${error.message}`);
+                pdfBtn.textContent = '❌ Error - Try Again';
+                setTimeout(() => {
+                  pdfBtn.textContent = originalPdfText;
+                  pdfBtn.disabled = false;
+                }, 3000);
+              }
+            }, 100);
+          };
+        }, 100);
       };
     };
   
@@ -498,11 +536,14 @@
     }
 
     function calculateLatinHonor(gpa) {
-      if (gpa >= 1.0 && gpa <= 1.15) {
+      // Ensure we're working with a properly rounded GPA
+      const roundedGPA = roundGPA(gpa);
+      
+      if (roundedGPA >= 1.0 && roundedGPA <= 1.15) {
         return "Summa Cum Laude 🏆";
-      } else if (gpa >= 1.1501 && gpa <= 1.35) {
+      } else if (roundedGPA >= 1.1501 && roundedGPA <= 1.35) {
         return "Magna Cum Laude 🥇";
-      } else if (gpa >= 1.3501 && gpa <= 1.6) {
+      } else if (roundedGPA >= 1.3501 && roundedGPA <= 1.6) {
         return "Cum Laude 🥈";
       } else {
         return "No Latin Honor";
@@ -519,6 +560,22 @@
         return 'cum-honor';
       }
       return '';
+    }
+
+    // Helper function for consistent GPA formatting
+    function formatGPA(gpa, decimalPlaces = 2) {
+      if (typeof gpa !== 'number' || isNaN(gpa)) {
+        return '0.00';
+      }
+      return gpa.toFixed(decimalPlaces);
+    }
+
+    // Helper function for consistent GPA rounding (rounds to 2 decimal places)
+    function roundGPA(gpa) {
+      if (typeof gpa !== 'number' || isNaN(gpa)) {
+        return 0;
+      }
+      return Math.round(gpa * 100) / 100;
     }
 
     function setupTabSwitching() {
@@ -556,8 +613,10 @@
         
         generateDetailedBreakdownPages(doc, groupedData);
         
-
-        const filename = `GPA_Report_Iskolaufiy.pdf`;
+        // Generate filename with GPA and timestamp
+        const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+        const gpaForFilename = formatGPA(finalGPA, 2).replace('.', '_');
+        const filename = `GPA_Report_${gpaForFilename}_${timestamp}_IskoLaudify.pdf`;
         
         doc.save(filename);
       } catch (error) {
@@ -594,7 +653,7 @@
       
       Object.keys(grouped).forEach(key => {
         const group = grouped[key];
-        group.gwa = group.totalUnits > 0 ? (group.totalGradePoints / group.totalUnits) : 0;
+        group.gwa = group.totalUnits > 0 ? roundGPA(group.totalGradePoints / group.totalUnits) : 0;
       });
       
       return grouped;
@@ -678,7 +737,7 @@
           yearLevel,
           semesterDisplay,
           group.totalUnits.toString(),
-          group.gwa.toFixed(2), 
+          formatGPA(group.gwa, 2), 
           weightedScore.toFixed(2)
         ]);
         
@@ -736,7 +795,7 @@
         doc.setFont(undefined, 'bold');
         
         const cleanLatinHonor = latinHonor.replace(/[🏆🥇🥈]/g, '').trim();
-        doc.text(`Final GWA: ${finalGPA.toFixed(2)} | Latin Honor: ${cleanLatinHonor}`, 105, newFinalY, { align: 'center' });
+        doc.text(`Final GWA: ${formatGPA(finalGPA, 2)} | Latin Honor: ${cleanLatinHonor}`, 105, newFinalY, { align: 'center' });
         
         const disclaimerY = newFinalY + 25;
         addDisclaimerFooter(doc, disclaimerY);
@@ -746,7 +805,7 @@
         doc.setFont(undefined, 'bold');
         
         const cleanLatinHonor = latinHonor.replace(/[🏆🥇🥈]/g, '').trim();
-        doc.text(`Final GWA: ${finalGPA.toFixed(2)} | Latin Honor: ${cleanLatinHonor}`, 105, finalY, { align: 'center' });
+        doc.text(`Final GWA: ${formatGPA(finalGPA, 2)} | Latin Honor: ${cleanLatinHonor}`, 105, finalY, { align: 'center' });
         
         const disclaimerY = finalY + 25;
         addDisclaimerFooter(doc, disclaimerY);
@@ -808,7 +867,7 @@
           'SEMESTER TOTAL',
           '',
           group.totalUnits.toString(),
-          `GWA: ${group.gwa.toFixed(2)}`
+          `GWA: ${formatGPA(group.gwa, 2)}`
         ]);
 
         doc.autoTable({

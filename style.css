@@ -288,6 +288,38 @@
     font-weight: 600;
     color: #333;
   }
+
+
+  .gpa-display {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .gpa-main {
+    font-size: 28px;
+    font-weight: 700;
+    color: #8b0000;
+    margin: 0 8px;
+  }
+
+  .gpa-rounded {
+    font-size: 16px;
+    color: #666;
+    font-weight: 500;
+  }
+
+  .gpa-stats {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid #8b0000;
+  }
+
+  .gpa-stats small {
+    color: #555;
+    font-size: 12px;
+  }
   
   #latin-honor-result {
     margin: 10px 0 15px 0;
