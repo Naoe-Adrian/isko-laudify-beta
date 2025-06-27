@@ -288,6 +288,38 @@
     font-weight: 600;
     color: #333;
   }
+
+
+  .gpa-display {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .gpa-main {
+    font-size: 28px;
+    font-weight: 700;
+    color: #8b0000;
+    margin: 0 8px;
+  }
+
+  .gpa-rounded {
+    font-size: 16px;
+    color: #666;
+    font-weight: 500;
+  }
+
+  .gpa-stats {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid #8b0000;
+  }
+
+  .gpa-stats small {
+    color: #555;
+    font-size: 12px;
+  }
   
   #latin-honor-result {
     margin: 10px 0 15px 0;
@@ -805,3 +837,65 @@
     font-style: italic;
   }
   
+  /* PDF Export Button Styling */
+.pdf-export-container {
+  margin-top: 20px;
+  text-align: center;
+  padding: 15px 0;
+  border-top: 1px solid #e0e0e0;
+}
+
+#export-pdf-btn {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+  margin: 0 auto;
+  display: inline-block;
+}
+
+#export-pdf-btn:hover {
+  background: linear-gradient(135deg, #c82333, #a71e2a);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(220, 53, 69, 0.4);
+}
+
+#export-pdf-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+}
+
+#export-pdf-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Disclaimer Notice Styling */
+.disclaimer-notice {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border: 1px solid #8b0000;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 15px 0;
+  font-size: 13px;
+  color: #495057;
+  box-shadow: 0 2px 4px rgba(139, 0, 0, 0.1);
+}
+
+.disclaimer-notice p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.disclaimer-notice strong {
+  color: #8b0000;
+  font-weight: 600;
+}

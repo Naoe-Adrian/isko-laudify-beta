@@ -8,9 +8,16 @@ A browser extension that allows university students to calculate their GPA and c
 - 🧮 Calculate your GPA based on official university grading system
 - 🎓 Check your Latin Honor eligibility (Summa, Magna, Cum Laude)
 - 📊 View detailed computation breakdown of how your GPA is calculated
+- 📄 **NEW**: Export comprehensive GPA reports as PDF documents
 - 🗂️ Filter courses by academic year and semester
 - 📝 Automatically excludes non-counted subjects (PE, NSTP, etc.)
 - 🔄 Works across all SIS servers
+
+### PDF Report Features
+- 📋 **Overall Summary**: Semester-by-semester GPA breakdown with color-coded year levels
+- 📖 **Detailed Breakdown**: Subject-by-subject analysis for each semester
+- 🎨 **Professional Layout**: Clean, printable format suitable for official use
+
 
 ### 1. Download the Extension Files
 
@@ -83,6 +90,19 @@ A browser extension that allows university students to calculate their GPA and c
 
 ---
 
+### 5. Generate PDF Report
+
+- After calculating your GPA, click the **"📄 Export to PDF"** button
+- The system will generate a comprehensive PDF report containing:
+  - **Summary Page**: Semester-by-semester overview with color-coded year levels
+  - **Detailed Pages**: Subject-by-subject breakdown for each semester
+- The PDF will be automatically downloaded with a timestamped filename
+- Use these reports for academic records, scholarship applications, or official documentation
+
+![PDF Export Feature](https://via.placeholder.com/600x300/8b0000/ffffff?text=PDF+Export+Feature)
+
+---
+
 ## 🏅 Latin Honors Criteria  
 *(PUP Student Handbook 2019, Section 15.3)*
 
@@ -104,10 +124,20 @@ A browser extension that allows university students to calculate their GPA and c
 
 This extension works entirely on your browser and does not collect or transmit any data. All calculations are performed locally.
 
-## Disclaimer
+## Important Disclaimer
 
-This calculator is unofficial and provided for reference only. Always verify your actual GPA and Latin Honor eligibility with the university registrar.
+**Isko-Laudify** is an independent, unofficial tool developed for educational and personal academic reference purposes only. 
+
+### Key Points:
+- **Not Affiliated**: This extension is not affiliated with, endorsed by, or connected to the Polytechnic University of the Philippines (PUP) or any educational institution.
+- **Academic Estimation**: The GPA calculations and Latin Honor predictions are estimations based on publicly available grading criteria and should be used for reference only.
+- **Personal Use Only**: This tool is intended for personal academic planning and grade tracking by students.
+- **Official Verification Required**: For official academic records, transcript requests, and formal grade verification, always consult your university registrar or academic affairs office.
+- **No Guarantee of Accuracy**: While efforts have been made to ensure calculation accuracy, users should verify all computations independently.
+
+### Developer Notice:
+This extension was developed as a personal project to assist students in tracking their academic progress. It is provided "as-is" without warranty of any kind. The developer assumes no responsibility for any academic decisions made based on the information provided by this tool.
 
 ---
 
-Developed by Adrian Naoe 
+Developed by Adrian Naoe
