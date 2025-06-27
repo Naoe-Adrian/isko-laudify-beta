@@ -6,10 +6,9 @@
   
     gpaButton.onclick = function () {
       let subjects = [];
-      let semesterCategories = new Set(); // To store unique semester categories
+      let semesterCategories = new Set(); 
       
       $('.tbldsp').each(function () {
-        // Try to find the semester heading from the card title
         let semesterHeader = $(this).closest('.card').find('.card-header .card-title').text().trim();
         let semesterCategory = semesterHeader || "Uncategorized";
         
@@ -233,11 +232,9 @@
         const btn = document.getElementById('calc-gpa-btn');
         const originalText = btn.textContent;
         
-        // Show loading state
         btn.textContent = 'Calculating...';
         btn.disabled = true;
         
-        // Add a small delay to show the loading state
         setTimeout(() => {
           let totalGradePoints = 0;
           let totalUnits = 0;
@@ -261,11 +258,9 @@
             }
           });
 
-          // Restore button state
           btn.textContent = originalText;
           btn.disabled = false;
 
-          // Validation
           if (includedSubjects.length === 0) {
             alert('Please select at least one subject to calculate GPA.');
             return;
@@ -352,11 +347,9 @@
             const pdfBtn = document.getElementById('export-pdf-btn');
             const originalPdfText = pdfBtn.textContent;
             
-            // Show progress
             pdfBtn.textContent = '📄 Preparing PDF...';
             pdfBtn.disabled = true;
             
-            // Add a small delay to show the UI update
             setTimeout(() => {
               try {
                 if (typeof window.jspdf === 'undefined') {
@@ -536,7 +529,6 @@
     }
 
     function calculateLatinHonor(gpa) {
-      // Ensure we're working with a properly rounded GPA
       const roundedGPA = roundGPA(gpa);
       
       if (roundedGPA >= 1.0 && roundedGPA <= 1.15) {
@@ -561,8 +553,6 @@
       }
       return '';
     }
-
-    // Helper function for consistent GPA formatting
     function formatGPA(gpa, decimalPlaces = 2) {
       if (typeof gpa !== 'number' || isNaN(gpa)) {
         return '0.00';
@@ -570,7 +560,6 @@
       return gpa.toFixed(decimalPlaces);
     }
 
-    // Helper function for consistent GPA rounding (rounds to 2 decimal places)
     function roundGPA(gpa) {
       if (typeof gpa !== 'number' || isNaN(gpa)) {
         return 0;
@@ -613,7 +602,6 @@
         
         generateDetailedBreakdownPages(doc, groupedData);
         
-        // Generate filename with GPA and timestamp
         const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
         const gpaForFilename = formatGPA(finalGPA, 2).replace('.', '_');
         const filename = `GPA_Report_${gpaForFilename}_${timestamp}_IskoLaudify.pdf`;
